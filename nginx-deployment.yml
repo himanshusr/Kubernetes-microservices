@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: nginx-frontend:latest
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 80
+            name: nginx
+            protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/sites-enabled/
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+
+          
+        

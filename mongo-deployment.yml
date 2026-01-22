@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels:
+        app: mongo
+    spec:
+      containers:
+        - name: mongo
+          image: mongo:6.0
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              value: root
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              value: pass
+            - name: MONGO_INITDB_DATABASE
+              value: quote_db
+          volumeMounts:
+            - name: mongo-data
+              mountPath: /data/db
+            - name: init-database
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+        - name: init-database
+          configMap:
+            name: mongo-config
+
+        
